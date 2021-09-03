@@ -1,7 +1,6 @@
 package com.example.marketsimplifiedtestapp.ui.dashboard
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +17,12 @@ class DashboardFragment : Fragment() {
 
     private lateinit var dashboardViewModel: DashboardViewModel
     private var _binding: FragmentDashboardBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     lateinit var recycler: RecyclerView
-    lateinit var db : AppDataBase
+    lateinit var db: AppDataBase
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,22 +42,21 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         db = AppDataBase.getInstance(requireContext())!!
-        if (db.dataModelDao.getAll().isNullOrEmpty()){
+        if (db.dataModelDao.getAll().isNullOrEmpty()) {
             dashboardViewModel.getApiCall(requireContext(), db)
-        }else{
-            callAdapter(db.dataModelDao.getAll(),db)
+        } else {
+            callAdapter(db.dataModelDao.getAll())
         }
 
         dashboardViewModel.isDataCallCompleted?.observe(viewLifecycleOwner, Observer {
-            Log.e("poppersdashout", it.toString())
-            callAdapter(it,db)
+            callAdapter(it)
 
         })
 
     }
 
-    fun callAdapter(item: List<MyData>, db: AppDataBase?){
-        val myAdapter = DashBoardDataAdapter(requireContext(), item, db!!)
+    private fun callAdapter(item: List<MyData>) {
+        val myAdapter = DashBoardDataAdapter(requireContext(), item)
         recycler.adapter = myAdapter
     }
 

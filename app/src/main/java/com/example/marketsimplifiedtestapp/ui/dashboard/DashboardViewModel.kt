@@ -16,11 +16,7 @@ import retrofit2.Response
 
 class DashboardViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
-    }
     val isDataCallCompleted: MutableLiveData<List<MyData>>? =  MutableLiveData<List<MyData>>()
-
 
     fun getApiCall(context: Context, db: AppDataBase?) {
         RetroFitCall.retroFitCall("https://api.github.com/")
@@ -32,19 +28,13 @@ class DashboardViewModel : ViewModel() {
                 response: Response<List<MyData>>
             ) {
                 if (response.code() == 200) {
-                    var auditList : List<MyData>
-                    auditList = response.body()!!
-                    if (db != null) {
-                        db.dataModelDao.addAvg(auditList)
-                    }
+                    var auditList : List<MyData> = response.body()!!
+                    db?.dataModelDao?.addAvg(auditList)
                     isDataCallCompleted?.postValue(db?.dataModelDao?.getAll())
-                    Log.e("poppers", db?.dataModelDao?.getAll().toString())
-                    Toast.makeText(context, "success", Toast.LENGTH_LONG).show()
                 }
 
             }
             override fun onFailure(call: Call<List<MyData>>, t: Throwable) {
-                Log.e("poppers1", t.toString())
                 Toast.makeText(context, "failed", Toast.LENGTH_LONG).show()
             }
         })
