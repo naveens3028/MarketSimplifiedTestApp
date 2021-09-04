@@ -19,7 +19,7 @@ class DashboardViewModel : ViewModel() {
     val isDataCallCompleted: MutableLiveData<List<MyData>>? =  MutableLiveData<List<MyData>>()
 
     fun getApiCall(context: Context, db: AppDataBase?) {
-        RetroFitCall.retroFitCall("https://api.github.com/")
+        RetroFitCall.retroFitCall()
         val service = RetroFitCall.retrofit.create(ApiInterface::class.java)
         val call = service.getDataFromGitHubRepo()
         call.enqueue(object : Callback<List<MyData>> {
