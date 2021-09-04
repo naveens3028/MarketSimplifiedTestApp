@@ -14,7 +14,7 @@ import com.example.marketsimplifiedtestapp.ui.notifications.NotificationsFragmen
 class HomeTabViewAdapter(fm: FragmentActivity) : FragmentStateAdapter(fm) {
 
     override fun getItemCount(): Int {
-        return 5
+        return 3
     }
 
     override fun createFragment(position: Int): Fragment {
