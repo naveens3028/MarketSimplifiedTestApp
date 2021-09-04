@@ -41,12 +41,16 @@ class MainActivity : AppCompatActivity() {
             object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    if (position == 0) {
-                        navigationView.selectedItemId = R.id.navigation_dashboard
-                    } else if (position == 1) {
-                        navigationView.selectedItemId = R.id.navigation_home
-                    } else if (position == 2) {
-                        navigationView.selectedItemId = R.id.navigation_notifications
+                    when (position) {
+                        0 -> {
+                            navigationView.selectedItemId = R.id.navigation_dashboard
+                        }
+                        1 -> {
+                            navigationView.selectedItemId = R.id.navigation_home
+                        }
+                        2 -> {
+                            navigationView.selectedItemId = R.id.navigation_notifications
+                        }
                     }
                 }
 
