@@ -1,35 +1,79 @@
 package com.example.marketsimplifiedtestapp
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.marketsimplifiedtestapp.databinding.ActivityMainBinding
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.viewpager2.widget.ViewPager2
+import com.example.marketsimplifiedtestapp.helper.BottomNavigationBehavior
+import com.example.marketsimplifiedtestapp.helper.HomeTabViewAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    lateinit var homeTabViewAdapter: HomeTabViewAdapter
+    lateinit var bottomNavigationBehavior: BottomNavigationBehavior
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        val navView: BottomNavigationView = binding.navView
+        bottomNavigationBehavior = BottomNavigationBehavior()
+        val layoutParams = navigationView.layoutParams as CoordinatorLayout.LayoutParams
+        layoutParams.behavior = bottomNavigationBehavior
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_dashboard, R.id.navigation_home, R.id.navigation_notifications
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        homeTabViewAdapter = HomeTabViewAdapter(this)
+        viewPager.adapter = homeTabViewAdapter
+        viewPager.offscreenPageLimit = 3
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+            }
+        })
+
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        val pageChangeCallback: ViewPager2.OnPageChangeCallback =
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    if (position == 0) {
+                        navigationView.selectedItemId = R.id.navigation_dashboard
+                    } else if (position == 1) {
+                        navigationView.selectedItemId = R.id.navigation_home
+                    } else if (position == 2) {
+                        navigationView.selectedItemId = R.id.navigation_notifications
+                    }
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {
+                    bottomNavigationBehavior.showBottomNavigationView(navigationView)
+                }
+            }
+        viewPager.registerOnPageChangeCallback(pageChangeCallback)
+
+        navigationView.setOnNavigationItemSelectedListener(
+            BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                when (item.itemId) {
+                    R.id.navigation_dashboard -> {
+                        viewPager.currentItem = 0
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_home -> {
+                        viewPager.currentItem = 1
+                        return@OnNavigationItemSelectedListener true
+                    }
+                    R.id.navigation_notifications -> {
+                        viewPager.currentItem = 2
+                        return@OnNavigationItemSelectedListener true
+                    }
+                }
+                false
+            })
+    }
+
 }
