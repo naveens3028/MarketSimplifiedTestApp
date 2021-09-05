@@ -1,52 +1,55 @@
-package com.example.marketsimplifiedtestapp.helper;
+package com.example.marketsimplifiedtestapp.helper
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.FrameLayout;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.ViewCompat;
+class BottomNavigationBehavior : CoordinatorLayout.Behavior<BottomNavigationView> {
+    constructor() : super() {}
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-public class BottomNavigationBehavior extends CoordinatorLayout.Behavior<BottomNavigationView> {
-
-
-    public BottomNavigationBehavior() {
-        super();
+    override fun layoutDependsOn(
+        parent: CoordinatorLayout,
+        child: BottomNavigationView,
+        dependency: View
+    ): Boolean {
+        return dependency is FrameLayout
     }
 
-    public BottomNavigationBehavior(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    override fun onStartNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: BottomNavigationView,
+        directTargetChild: View,
+        target: View,
+        nestedScrollAxes: Int
+    ): Boolean {
+        return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL
     }
 
-    @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, BottomNavigationView child, View dependency) {
-        boolean dependsOn = dependency instanceof FrameLayout;
-        return dependsOn;
-    }
-
-    @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, BottomNavigationView child, View directTargetChild, View target, int nestedScrollAxes) {
-        return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL;
-    }
-
-    @Override
-    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, BottomNavigationView child, View target, int dx, int dy, int[] consumed) {
+    override fun onNestedPreScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: BottomNavigationView,
+        target: View,
+        dx: Int,
+        dy: Int,
+        consumed: IntArray
+    ) {
         if (dy < 0) {
-            showBottomNavigationView(child);
+            showBottomNavigationView(child)
         } else if (dy > 0) {
-            hideBottomNavigationView(child);
+            hideBottomNavigationView(child)
         }
     }
 
-    public void hideBottomNavigationView(BottomNavigationView view) {
-        view.animate().translationY(view.getHeight());
+    fun hideBottomNavigationView(view: BottomNavigationView) {
+        view.animate().translationY(view.height.toFloat())
     }
 
-    public void showBottomNavigationView(BottomNavigationView view) {
-        view.animate().translationY(0);
+    fun showBottomNavigationView(view: BottomNavigationView) {
+        view.animate().translationY(0f)
     }
-
 }
